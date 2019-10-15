@@ -3,6 +3,7 @@ import UIKit
 
 @available(iOS 10.0, *)
 public class SwiftAbiliaNotificationsPlugin: NSObject, FlutterPlugin, UNUserNotificationCenterDelegate {
+  static var PRESENT_WHILE_APP_OPEN_KEY = "present_while_app_open_key"
   
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "abilia_notifications", binaryMessenger: registrar.messenger())
@@ -26,47 +27,44 @@ public class SwiftAbiliaNotificationsPlugin: NSObject, FlutterPlugin, UNUserNoti
   
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
-    case "initialize":
-      let initString = initialize();
-      result(initString)
-    case "getPlatformVersion":
-      result("getPlatformVersion" + UIDevice.current.systemVersion)
     case "setNotification":
-      let notText = setNofification()
-      result(notText + UIDevice.current.systemVersion)
+      let args : NSArray = call.arguments as! NSArray
+      setNofification(args: args)
+      result(nil)
     default:
-      result("default" + UIDevice.current.systemVersion)
+      result(nil)
     }
   }
   
-  public func initialize() -> String {
-    // Do initialization here
+  public func setNofification(args: NSArray) -> Void {
+    let argsMap : NSDictionary = args[0] as! NSDictionary
+    let title : String = argsMap["title"] as! String
+    let body : String = argsMap["body"] as! String
+    let millisecondsSinceEpoch : Double = argsMap["millisecondsSinceEpoch"] as! Double
+    let content = UNMutableNotificationContent()
+    content.title = title
+    content.body = body
+    content.sound = UNNotificationSound.default()
     
+    let date = Date(timeIntervalSince1970: millisecondsSinceEpoch / 1000)
+    print("The date is:")
+    print(date)
+    let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
     
+    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
     
-    return "init ok"
+    let uuidString = UUID().uuidString
+    let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+    
+    let center = UNUserNotificationCenter.current()
+    center.add(request) { (error) in
+      // Check for errors
+    }
   }
   
-  public func setNofification() -> String {
-    if #available(iOS 10.0, *) {
-      print("Ios is more than 10")
-      let content = UNMutableNotificationContent()
-      content.title = "Testing abilia nooooooot"
-      content.body = "Yes it is!"
-      let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
-      let uuidString = UUID().uuidString
-      let request = UNNotificationRequest(identifier: uuidString,
-                                          content: content, trigger: trigger)
-      
-      let notificationCenter = UNUserNotificationCenter.current()
-      notificationCenter.add(request) { (error) in
-        if error != nil {
-          print("Some error")
-        }
-      }
-    } else {
-      // Fallback on earlier versions
-    }
-    return "loooow"
+  public func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                     willPresent: UNNotification,
+                                     withCompletionHandler: @escaping (UNNotificationPresentationOptions)->()) {
+    withCompletionHandler([.alert, .sound, .badge])
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:uuid/uuid.dart';
 
 class AbiliaNotifications {
   static const MethodChannel _channel =
@@ -11,14 +12,16 @@ class AbiliaNotifications {
     return version;
   }
 
-  static Future<void> setNotification() async {
-    final apa = await _channel.invokeMethod('setNotification');
-    await _channel.invokeMethod('show', <String, dynamic>{
-      'id': 0,
-      'title': "Titleee",
-      'body': "Bodddyy",
-    });
-    print('What is apa: $apa');
+  static Future<void> setNotification(
+      String title, String body, DateTime date) async {
+    await _channel.invokeMethod('setNotification', [
+      <String, dynamic>{
+        'id': Uuid().v4(),
+        'title': title,
+        'body': body,
+        'millisecondsSinceEpoch': date.millisecondsSinceEpoch,
+      }
+    ]);
   }
 
   static Future<void> initialize() async {

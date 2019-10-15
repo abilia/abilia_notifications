@@ -42,7 +42,8 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> setNotification() async {
     print('Setting notification');
-    await AbiliaNotifications.setNotification();
+    await AbiliaNotifications.setNotification(
+        "Title", "Body", DateTime.now().add(Duration(seconds: 30)));
     print('Notification is now set');
   }
 
@@ -58,7 +59,7 @@ class _MyAppState extends State<MyApp> {
             children: <Widget>[
               Text('Running on: $_platformVersion\n'),
               RaisedButton(
-                child: Text('Larm om 1 minut'),
+                child: Text('Larm om 30 sekunder'),
                 onPressed: () {
                   setNotification().then(print).catchError(print);
                 },

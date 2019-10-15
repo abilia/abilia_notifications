@@ -1,0 +1,22 @@
+PODS:
+  - abilia_notifications (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - abilia_notifications (from `.symlinks/plugins/abilia_notifications/ios`)
+  - Flutter (from `.symlinks/flutter/ios`)
+
+EXTERNAL SOURCES:
+  abilia_notifications:
+    :path: ".symlinks/plugins/abilia_notifications/ios"
+  Flutter:
+    :path: ".symlinks/flutter/ios"
+
+SPEC CHECKSUMS:
+  abilia_notifications: 45bfe77fcc3d60fcd7d4a48566ad13f65e30077b
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+
+PODFILE CHECKSUM: 10ae9c18d12c9ffc2275c9a159a3b1e281990db0
+
+COCOAPODS: 1.7.5
